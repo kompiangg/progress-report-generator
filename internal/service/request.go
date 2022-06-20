@@ -9,6 +9,7 @@ import (
 
 	"github.com/kompiangg/report-generator/internal/constant"
 	"github.com/kompiangg/report-generator/internal/dto"
+	"github.com/kompiangg/report-generator/pkg/errors"
 )
 
 var (
@@ -29,17 +30,17 @@ var (
 		}`}
 )
 
-func (s *service) SendRequest(params *SendRequestParams) *dto.RepositoryData {
+func (s *service) SendRequest(params *SendRequestParams) (*dto.RepositoryData, error) {
 	GET_ISSUES["query"] = fmt.Sprintf(GET_ISSUES["query"], params.RepositoryName, params.RepositoryOwner)
 
 	jsonValue, err := json.Marshal(GET_ISSUES)
 	if err != nil {
-		panic("ERROR: error while encode the JSON")
+		return nil, errors.ErrMarshalJSON
 	}
 
 	request, err := http.NewRequest(http.MethodPost, constant.GITHUB_GRAPHQL_ENDPOINT, bytes.NewBuffer(jsonValue))
 	if err != nil {
-		panic("ERROR: error while creating new request")
+		return nil, errors.ErrCreatingNewRequest
 	}
 
 	request.Header.Set("Authorization", "Bearer "+params.GithubToken)
@@ -47,22 +48,22 @@ func (s *service) SendRequest(params *SendRequestParams) *dto.RepositoryData {
 
 	response, err := s.httpClient.Do(request)
 	if err != nil {
-		panic("ERROR: error while hitting the GraphQL Github API")
+		return nil, errors.ErrHittingGraphQL
 	}
 
 	defer response.Body.Close()
 
 	bodyReader, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		panic("ERROR: error while reading response body")
+		return nil, errors.ErrReadingResponseBody
 	}
 
 	var bodyResponseValue interface{}
 
 	err = json.Unmarshal(bodyReader, &bodyResponseValue)
 	if err != nil {
-		panic("ERROR: error while unmarshal response body")
+		return nil, errors.ErrUnmarshalJSON
 	}
 
-	return dto.NewRepositoryData(bodyResponseValue)
+	return dto.NewRepositoryData(bodyResponseValue), nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type ServiceContract interface {
-	SendRequest(params *SendRequestParams) *dto.RepositoryData
+	SendRequest(params *SendRequestParams) (*dto.RepositoryData, error)
 	InputData() (repositoryName string, repositoryOwner string)
 }
 

@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/kompiangg/report-generator/internal/service"
@@ -21,11 +22,14 @@ func Start(params *ParamsInitService) {
 	// repositoryName, repositoryOwner := service.InputData()
 	repositoryName, repositoryOwner := "sicgolib", "SIC-Unud"
 
-	responseData := serviceObject.SendRequest(&service.SendRequestParams{
+	responseData, err := serviceObject.SendRequest(&service.SendRequestParams{
 		GithubToken:     params.GithubToken,
 		RepositoryName:  repositoryName,
 		RepositoryOwner: repositoryOwner,
 	})
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	for name, v := range *responseData {
 		fmt.Println(name, v)
