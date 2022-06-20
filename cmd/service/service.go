@@ -18,7 +18,8 @@ func Start(params *ParamsInitService) {
 	}
 	serviceObject := service.NewService(serviceParams)
 
-	repositoryName, repositoryOwner := service.InputData()
+	// repositoryName, repositoryOwner := service.InputData()
+	repositoryName, repositoryOwner := "sicgolib", "SIC-Unud"
 
 	responseData := serviceObject.SendRequest(&service.SendRequestParams{
 		GithubToken:     params.GithubToken,
