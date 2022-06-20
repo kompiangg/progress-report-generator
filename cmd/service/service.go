@@ -20,7 +20,12 @@ func Start(params *ParamsInitService) {
 
 	repositoryName, repositoryOwner := service.InputData()
 
-	responseData := serviceObject.SendRequest(params.GithubToken, repositoryName, repositoryOwner)
+	responseData := serviceObject.SendRequest(&service.SendRequestParams{
+		GithubToken:     params.GithubToken,
+		RepositoryName:  repositoryName,
+		RepositoryOwner: repositoryOwner,
+	})
+
 	for name, v := range *responseData {
 		fmt.Println(name, v)
 	}

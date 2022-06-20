@@ -7,7 +7,7 @@ import (
 )
 
 type ServiceContract interface {
-	SendRequest(githubToken string, repositoryName string, repositoryOwner string) *dto.RepositoryData
+	SendRequest(params *SendRequestParams) *dto.RepositoryData
 	InputData() (repositoryName string, repositoryOwner string)
 }
 

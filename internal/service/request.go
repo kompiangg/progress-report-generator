@@ -29,8 +29,8 @@ var (
 		}`}
 )
 
-func (s *service) SendRequest(githubToken string, repositoryName string, repositoryOwner string) *dto.RepositoryData {
-	GET_ISSUES["query"] = fmt.Sprintf(GET_ISSUES["query"], repositoryName, repositoryOwner)
+func (s *service) SendRequest(params *SendRequestParams) *dto.RepositoryData {
+	GET_ISSUES["query"] = fmt.Sprintf(GET_ISSUES["query"], params.RepositoryName, params.RepositoryOwner)
 
 	jsonValue, err := json.Marshal(GET_ISSUES)
 	if err != nil {
@@ -42,7 +42,7 @@ func (s *service) SendRequest(githubToken string, repositoryName string, reposit
 		panic("ERROR: error while creating new request")
 	}
 
-	request.Header.Set("Authorization", "Bearer "+githubToken)
+	request.Header.Set("Authorization", "Bearer "+params.GithubToken)
 	request.Header.Set("Content-Type", "application/json")
 
 	response, err := s.httpClient.Do(request)
