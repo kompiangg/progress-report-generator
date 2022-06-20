@@ -51,6 +51,11 @@ func (s *service) SendRequest(params *SendRequestParams) (*dto.RepositoryData, e
 		return nil, errors.ErrHittingGraphQL
 	}
 
+	err = isOK(response.StatusCode)
+	if err != nil {
+		return nil, err
+	}
+
 	defer response.Body.Close()
 
 	bodyReader, err := ioutil.ReadAll(response.Body)
@@ -66,4 +71,15 @@ func (s *service) SendRequest(params *SendRequestParams) (*dto.RepositoryData, e
 	}
 
 	return dto.NewRepositoryData(bodyResponseValue), nil
+}
+
+func isOK(statusCode int) error {
+	if statusCode == 200 {
+		return nil
+	} else if statusCode == 401 {
+		fmt.Println("ERROR: We get unauthorized error")
+		fmt.Println("ERROR: Please restart the program and gimme a valid Authorization Token")
+		return errors.ErrUnauthorizedRequest
+	}
+	return nil
 }

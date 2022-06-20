@@ -9,6 +9,7 @@ import (
 type ServiceContract interface {
 	SendRequest(params *SendRequestParams) (*dto.RepositoryData, error)
 	InputData() (repositoryName string, repositoryOwner string)
+	GenerateFile(params *GenerateFileParams) error
 }
 
 type service struct {
