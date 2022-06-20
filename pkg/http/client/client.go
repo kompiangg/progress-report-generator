@@ -8,7 +8,6 @@ func GetHttpClient() *http.Client {
 	return client
 }
 
-func NewHttpClient() *http.Client {
+func NewHttpClient() {
 	client = &http.Client{}
-	return GetHttpClient()
 }

@@ -31,16 +31,22 @@ func NewRepositoryData(responseData interface{}) *RepositoryData {
 
 		if len(assertedNameArr) != 0 {
 			responseEachData.Assignees = assertedNameArr[0].(map[string]interface{})["name"].(string)
+		} else {
+			responseEachData.Assignees = "Other"
 		}
 
 		responseDataArr = append(responseDataArr, responseEachData)
 	}
 
 	for _, v := range responseDataArr {
-		if _, ok := result[assigneeName(v.Assignees)]; !ok {
+		if v.Assignees == "Other" {
+			result[assigneeName("Other")] = []issuesTitle{issuesTitle(v.Title)}
+			continue
+		} else if _, ok := result[assigneeName(v.Assignees)]; !ok {
 			result[assigneeName(v.Assignees)] = []issuesTitle{issuesTitle(v.Title)}
 			continue
 		}
+
 		tempAssigneeName := result[assigneeName(v.Assignees)]
 		tempAssigneeName = append(tempAssigneeName, issuesTitle(v.Title))
 		result[assigneeName(v.Assignees)] = tempAssigneeName
