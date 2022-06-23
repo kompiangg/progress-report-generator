@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Printf("Program Started\n\n")
 
-	config.Init("./config/.env")
+	config.Init()
 	confValue := config.GetConfig()
 
 	httpClientPkg.NewHttpClient()

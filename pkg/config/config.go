@@ -18,8 +18,8 @@ func GetConfig() *Config {
 	return config
 }
 
-func Init(location string) error {
-	err := godotenv.Load(location)
+func Init() error {
+	err := godotenv.Load("config/.env")
 	if err != nil {
 		log.Println("[Init] error while load environment variable")
 		return err

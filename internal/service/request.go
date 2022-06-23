@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/kompiangg/report-generator/internal/constant"
 	"github.com/kompiangg/report-generator/internal/dto"
@@ -46,9 +47,34 @@ func (s *service) SendRequest(params *SendRequestParams) (*dto.RepositoryData, e
 	request.Header.Set("Authorization", "Bearer "+params.GithubToken)
 	request.Header.Set("Content-Type", "application/json")
 
-	response, err := s.httpClient.Do(request)
-	if err != nil {
-		return nil, errors.ErrHittingGraphQL
+	responseChan := make(chan *http.Response)
+
+	fmt.Println("Sending request start")
+	fmt.Println("Waiting for response")
+	fmt.Printf("Progress ")
+
+	go func() {
+		response, err := s.httpClient.Do(request)
+		if err != nil {
+			responseChan <- nil
+		}
+		responseChan <- response
+	}()
+
+	var response *http.Response
+
+	for resCheck := false; !resCheck; {
+		select {
+		case response = <-responseChan:
+			if response == nil {
+				return nil, errors.ErrHittingGraphQL
+			}
+			resCheck = true
+			fmt.Printf("\nResponse received\n\n")
+		default:
+			time.Sleep(500 * time.Millisecond)
+			fmt.Printf(". ")
+		}
 	}
 
 	err = isOK(response.StatusCode)
