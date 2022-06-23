@@ -10,3 +10,9 @@ var (
 	ErrHittingGraphQL      = errors.New("ERROR: Error while hitting the GraphQL Github API")
 	ErrReadingResponseBody = errors.New("ERROR: Error while reading response body")
 )
+
+var (
+	ErrCreatingNewFolder = errors.New("ERROR: Error while creating new folder")
+	ErrCreatingNewFile   = errors.New("ERROR: Error while creating new file")
+	ErrWhileSync         = errors.New("ERROR: Error while sync or save new file")
+)

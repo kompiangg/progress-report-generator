@@ -13,24 +13,6 @@ import (
 	"github.com/kompiangg/report-generator/pkg/errors"
 )
 
-var (
-	GET_ISSUES = map[string]string{
-		"query": `{
-			repository(name: "%s", owner: "%s") {
-					issues (states: CLOSED, first: 100) {
-							nodes {
-									title
-									assignees (first: 100) {
-											nodes {
-													name
-											}
-									}
-							}
-					}
-			}
-		}`}
-)
-
 func (s *service) SendRequest(params *SendRequestParams) (*dto.RepositoryData, error) {
 	GET_ISSUES["query"] = fmt.Sprintf(GET_ISSUES["query"], params.RepositoryName, params.RepositoryOwner)
 

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -22,16 +21,21 @@ func Start(params *ParamsInitService) {
 	// repositoryName, repositoryOwner := service.InputData()
 	repositoryName, repositoryOwner := "Main-WebApp", "SIC-Unud"
 
-	responseData, err := serviceObject.SendRequest(&service.SendRequestParams{
-		GithubToken:     params.GithubToken,
+	repositoryMetadata := service.RepositoryMetadata{
 		RepositoryName:  repositoryName,
 		RepositoryOwner: repositoryOwner,
+	}
+
+	responseData, err := serviceObject.SendRequest(&service.SendRequestParams{
+		GithubToken:        params.GithubToken,
+		RepositoryMetadata: repositoryMetadata,
 	})
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
-	for name, v := range *responseData {
-		fmt.Println(name, v)
-	}
+	serviceObject.GenerateFile(&service.GenerateFileParams{
+		ReportData:         responseData,
+		RepositoryMetadata: repositoryMetadata,
+	})
 }
